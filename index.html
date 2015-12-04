@@ -32,7 +32,7 @@
         To detemine the uniformity of the lights on the tree, we first locate all the lights by identifying the brightest regions of the image. Then, for each light, I take the average distance between that light and its 3 closest neighbors. Finally, I take the standard deviation of all these averages. In addition, I want to reward trees that have more lights (while still maintaining uniformity), so the score is scaled up by the number of lights.</p>
         
         <p>The speficic score returned is calculated as
-<pre><code>score = 100 - ((3 / log(num_lights) * std_dev(avg_light_dist)</code></pre>
+<pre><code>score = 100 - 3 / log(num_lights) * std_dev(avg_light_dist)</code></pre>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/christianreimer">christianreimer</a></p>
