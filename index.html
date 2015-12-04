@@ -26,13 +26,14 @@
       <section>
         <h3>Computer Vision to Amuse and Delight</h3>
         
-        Obsessing over the distribution of your Christman Twingle Lights? Wondering if your tree is standing straight, or maybe leaning just a little bit to wards the wall? Too many red ribbons? Not enough glitter? Too many ornaments over here and a big gap over there? 
+        <p>Obsessing over the distribution of your Christman Twingle Lights? Wondering if your tree is standing straight, or maybe leaning just a little bit to wards the wall? Too many red ribbons? Not enough glitter? Too many ornaments over here and a big gap over there?</p>
         
         <h3>Light Uniformity Score</h3>
+        To detemine the uniformity of the lights on the tree, we first locate all the lights by identifying the brightest regions of the image. Then, for each light, I take the average distance between that light and its 3 closest neighbors. Finally, I take the standard deviation of all these averages. In addition, I want to reward trees that have more lights (while still maintaining uniformity), so the score is scaled up by the number of lights. The speficic score returned is calculated as
+        
         <code>
-          log_len = log(number_of_lights)
-          std_dev = standard_dev(average_distance_between_nearest_lights)
-          score = 100 - ((3 / log_len) * std_dev)</code>
+          score = 100 - ((3 / log(number_of_lights) * std_dev(average distance between beighboring lights)
+          </code>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/christianreimer">christianreimer</a></p>
