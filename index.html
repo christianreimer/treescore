@@ -48,7 +48,7 @@
         a vertical line and calculate the angle in degrees.</p>
         
         <p>The specific score returned is calculated as
-        <pre><code>score = 100 - 1 / ratio * 5 * angle</code></pre>
+        <pre><code>score = 100 - abs(ideal_ratio - ratio) * 5 * angle</code></pre>
         </p>
         
   
