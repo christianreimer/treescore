@@ -24,10 +24,15 @@
 
       </header>
       <section>
-        <h3>Computer Visision to Amuse and Delight</h3>
+        <h3>Computer Vision to Amuse and Delight</h3>
         
         Obsessing over the distribution of your Christman Twingle Lights? Wondering if your tree is standing straight, or maybe leaning just a little bit to wards the wall? Too many red ribbons? Not enough glitter? Too many ornaments over here and a big gap over there? 
         
+        <h3>Light Uniformity Score</h3>
+        <code>
+          log_len = log(number_of_lights)
+          std_dev = standard_dev(average_distance_between_nearest_lights)
+          score = 100 - ((3 / log_len) * std_dev)</code>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/christianreimer">christianreimer</a></p>
