@@ -82,8 +82,12 @@
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/image.png'/>
         </p>
     
-        <p>Locate the lights
+        <p>To locate the lights, a threshold is applied to the image to find the brightest regions, which produces
+        the following image.
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/leds.png'/>
+          Afterwards, the center of each bright region is found, and each of these (x, y) pairs is considered
+          a light.
+          <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/outline.png'/>
         </p>
 
         <p>The binary mask
