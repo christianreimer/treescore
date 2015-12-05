@@ -56,8 +56,7 @@
         distribution of colors was 50% green, 20% red, 20% gold, and 10% white. So that is what I am scoring on.</p>
         
         <p>The specific score returned is calculated as
-<pre><code>
-color_score = 100 - sum(ideal_ratio[c] - observed_ratio[c]
+<pre><code>color_score = 100 - sum(abs(ideal_ratio[c] - observed_ratio[c])
                         for c in ['green', 'red', 'gold', white'])</code></pre>
         </p>
   
