@@ -141,15 +141,33 @@
         </p>
   
         <p>
-          For the coloro component lets use another 
+          For the color component lets use another tree, since the tree above is not decorated. In case caes, a lovely tree
+          in a living room.
+          <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/tree2.png'/>
+        </p>
+        
+        <p>
+          Once again, an attempt is made to cut out the tree itself. This time the mask is a bit less presice since there it 
+          a fair amount of noice in the image.
+          <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/tree_mask.png'/>
+        </p>
+        
+        <p>
+          The mask is then used to remove everything except for the tree, and the remaining image is categorixed into green,
+          red, gold, and white.
+          <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/tree_cut.png'/>
         </p>
   
+        <p>
+          Finally the observed color ratios are compared with the idea ratio. In this case, the tree is spot on with regards 
+          to gree, but is lacking red and has too much white.
         <pre><code>color_score: 70
   green: 50.0%
   red: 8.3%
   white: 25.0%
   gold: 16.7%</code></pre>
-  
+        </p>
+        
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/christianreimer">christianreimer</a></p>
