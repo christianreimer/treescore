@@ -82,8 +82,13 @@
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/image.png'/>
         </p>
     
-        <p>Locate the lights
+        <p>To locate the lights, a threshold is applied to the image to find the brightest regions, which produces
+        the following image.
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/leds.png'/>
+          Afterwards, the center of each bright region is found, and each of these (x, y) pairs is considered
+          a light. At this point it is simply a matter of treating the lights as points in a plane to determine the 
+          distance.
+          <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/dots.png'/>
         </p>
 
         <p>The binary mask
