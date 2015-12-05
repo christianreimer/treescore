@@ -38,7 +38,7 @@
         uniformity), so the score is scaled up by the number of lights.</p>
         
         <p>The speficic score returned is calculated as
-        <pre><code>score = 100 - log(num_lights) * std_dev(avg_light_dist)</code></pre>
+        <pre><code>lights_score = 100 - log(num_lights) * std_dev(avg_light_dist)</code></pre>
         </p>
         
         <h3>Tree Shape Score</h3>
@@ -48,9 +48,16 @@
         bottom right corners to the top) with a vertical line and calculate the angle in degrees.</p>
         
         <p>The specific score returned is calculated as
-        <pre><code>score = 100 - abs(ideal_ratio - ratio) * angle</code></pre>
+        <pre><code>shape_score = 100 - abs(ideal_ratio - observed_ratio) * angle</code></pre>
         </p>
         
+        <h3>Color Score</h3>
+        <p>The ideal Christmas colors are green, red, gold, and white. I somewhat arbitrarely decidede that a pleasent 
+        distribution of colors was 50% green, 20% red, 20% gold, and 10% white. So that is what I am scoring on.</p>
+        
+        <p>The specific score returned is calculated as
+        <pre><code>color_score = 100 - sum(ideal_ratio[color] - observed_ratio[color])</code></pre>
+        </p>
   
       </section>
       <footer>
