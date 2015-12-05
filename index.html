@@ -76,27 +76,39 @@
         <pre><code>total_score = sum(light_score, shape_score, color_score) / 3</code></pre>
         </p>
 
-        <h2>The Process</h2>
+        <h2>An Example</h2>
         <p>
-          Start out with an images of a nice tree
+          Start out with an images of a lovely tree.
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/image.png'/>
         </p>
     
-        <p>To locate the lights, a threshold is applied to the image to find the brightest regions, which produces
-        the following image.
+        <p>
+          To locate the lights, a threshold is applied to the image to find the brightest regions in the image.
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/leds.png'/>
-          Afterwards, the center of each bright region is found, and each of these (x, y) pairs is considered
-          a light. At this point it is simply a matter of treating the lights as points in a plane to determine the 
-          distance.
+        </p>
+        
+        <p>  
+          The center of each bright region is found and the (x, y) coordinates determined. At this point it is 
+          simply a matter of treating the lights as points in a plane to determine the distance.
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/dots.png'/>
         </p>
-
-        <p>The binary mask
+        
+        <p>To determine the shape of the tree, a color filter is applied which attempts to detect all gren pixels in the 
+        images and blank out everything else. This modified images is then transformed into a binary mask.
         <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/mask.png'/>
-        <p>
         </p>
-
-        <p>The outline
+        
+        <p>Once the mask has been determined, a contour is found on the binary image.
+        <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/contour.png'/>
+        </p>
+        
+        <p>
+          At this point, I assume the tree is the main focus of the image. Thus the bottom right corner of the tree is 
+          the point on the contour closest to the bottom right corner of th image. Similar logic for the bottom left corner. The top 
+          of the tree is the midpoint of the highest points on the contour.
+        </p>
+        <p>With the corners determined, an outline of the tree can be drawn, as well as the observed line from center middle 
+        to top, and the vertical line.
         <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/outline.png'/>
         <p>
         </p>
