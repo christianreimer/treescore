@@ -155,7 +155,12 @@ th {
 
 img {
   max-width:100%;
-  border: solid 2px #333;
+}
+
+
+section img {
+  max-width:100%;
+  border: solid 1px #666;
 }
 
 header {
