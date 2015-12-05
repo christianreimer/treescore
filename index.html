@@ -32,23 +32,23 @@
         
         <h3>Light Uniformity Score</h3>
         To detemine the uniformity of the lights on the tree, I first locate all the lights by identifying the 
-        brightest regions of the image. Then, for each light, I take the average distance between that light and its 
-        3 closest neighbors. Finally, I take the standard deviation of all these averages. In addition, I want to 
-        reward trees that have more lights (while still maintaining uniformity), so the score is scaled up by the number 
-        of lights.</p>
+        brightest regions of the image, and assume the center of each region correspond to a light. Then, for each light, 
+        I take the average distance between that light and its three closest neighbors. Finally, I take the standard 
+        deviation of all these averages. In addition, I want to reward trees that have more lights (while still maintaining 
+        uniformity), so the score is scaled up by the number of lights.</p>
         
         <p>The speficic score returned is calculated as
-        <pre><code>score = 100 - 3 / log(num_lights) * std_dev(avg_light_dist)</code></pre>
+        <pre><code>score = 100 - log(num_lights) * std_dev(avg_light_dist)</code></pre>
         </p>
         
         <h3>Tree Shape Score</h3>
         <p>The shape of the tree is compared to a triangle with the ratio of XX/YY. Where did that come from? I measured 
-        several trees that I found to be visually appealing ... In addition to judging the height/width ratio, I compare
-        the observed angle of the tree (from middle point between bottom left and bottom right corners to the top) with 
-        a vertical line and calculate the angle in degrees.</p>
+        a picture of a trees that I found to be visually appealing ... Yes, completely subjective. In addition to judging 
+        the height/width ratio, I compare the observed angle of the tree (from the middle point between bottom left and 
+        bottom right corners to the top) with a vertical line and calculate the angle in degrees.</p>
         
         <p>The specific score returned is calculated as
-        <pre><code>score = 100 - abs(ideal_ratio - ratio) * 5 * angle</code></pre>
+        <pre><code>score = 100 - abs(ideal_ratio - ratio) * angle</code></pre>
         </p>
         
   
