@@ -155,7 +155,7 @@ th {
 
 img {
   max-width:100%;
-  border: 2px color: #333;
+  border: solid 2px #333;
 }
 
 header {
