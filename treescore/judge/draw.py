@@ -17,7 +17,8 @@ import cv2
 from . import utils
 
 
-def draw_contour(img_shape, contour):
+def contour(img_shape, contour):
+    """Draw black contour on white image"""
     blank = np.array([(255,255,255)] * img_shape[0] * img_shape[1],
                     dtype=np.uint8)
     blank = blank.reshape(img_shape)
@@ -26,7 +27,8 @@ def draw_contour(img_shape, contour):
     cv2.drawContours(blank, [contour], 0, black, 3)
     return blank
 
-def draw_all(img, dots, corners):
+
+def sketch(img, dots, corners):
     """Draws the lights and lines on the img"""
     red = (0, 0, 255)
     for dot in dots:
@@ -44,8 +46,8 @@ def draw_all(img, dots, corners):
     return img
 
 
-def draw_dots(img_shape, dots):
-    """Draws the dots on the image"""
+def leds(img_shape, dots):
+    """Draw red dots on a white image"""
     # Create an empty white image of the same size as the orginal image
     color = (0, 0, 0)
     blank = np.array([(255,255,255)] * img_shape[0] * img_shape[1],
@@ -57,7 +59,7 @@ def draw_dots(img_shape, dots):
     return blank
 
 
-def draw_shape(img_shape, corners):
+def outline(img_shape, corners):
     """Draws the outline on the image"""
     # Create an empty white image of the same size as the orginal image
     color = (0, 0, 0)
@@ -73,19 +75,7 @@ def draw_shape(img_shape, corners):
     for corner1, corner2 in itertools.combinations(corners, 2):
         cv2.line(blank, corner1, corner2, color, thickness=2)
 
-    # Calculate the center of the bottom and draw a vertical line, as well as
-    # a line intersecting the top of the tree
-#    theo_bottom_x = int(round((corners.bottom_right[0] -
-#        corners.bottom_left[0]) / 2)) + corners.bottom_left[0]
-#    theo_bottom_y = max(corners.bottom_right[1], corners.bottom_left[1])
-#    cv2.line(blank, (theo_bottom_x, theo_bottom_y), (theo_bottom_x, 0),
-#        color, thickness=2)
-#    cv2.line(blank, (theo_bottom_x, theo_bottom_y), corners.top,
-#        color, thickness=2)
-
     cv2.line(blank, corners.bottom_mid, corners.top, color, thickness=2)
-#    cv2.line(blank, corners.bottom_mid, (corners.bottom_mid[0], corners.top[1]),
-#        (0,0,255), thickness=1)
     return blank
 
 

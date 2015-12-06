@@ -13,24 +13,49 @@ from . import utils
 from . import leds
 from . import shape
 from . import colors
-# import cv2
+from . import draw
 
-from .colors import ColorPicker
+from collections import namedtuple
+
+Scores = namedtuple('Scores', 'overall led shape color')
+Images = namedtuple('Image', 'original leds contour sketched')
 
 
-def judge(fname, picker, width=500):
-    """Runs the judging process on the image"""
-    img = utils.resize(utils.open_img(fname), width=500)
-    contour = shape.tree_contours(shape.tree_mask(img, picker))
-    tree_img, mask_img = shape.extract_tree(img, contour)
-    corners = shape.corners(img, contour)
-    shape_score = shape.score(corners)
-    contour_img = draw.draw_contour(img.shape, contour)
-    outline_img = draw.draw_shape(img.shape, corners)
-    led_score, point_lst = leds.score(img)
-    led_img = draw.draw_dots(img.shape, point_lst)
-    all_img = draw.draw_all(contour_img.copy(), point_lst, corners)
+def score(fname, picker, width=500, images=False):
+    """Run the treescoring process on an image.
 
-    return img, tree_img, mask_img, led_img, outline_img, contour_img, all_img, shape_score, led_score
+    Usage::
+
+    >>> import treescore.judge as judge
+    >>> scores = judge.score(fname, picker)
+    >>> scores, images = judge.score(fname, picker, images=True)
+
+    :param fname: A string, the full path to the image file
+    :param picker: A :class:`ColorPicker`
+    :param width: An int, the width to resize the image to
+    :param images: A boolean, should outputimages be produced
+    :returns: A namedtuple, containing the scores
+    :returns: A namedtuple, containing the generated images
+    """
+    img_original = utils.resize(utils.open_img(fname), width=width)
+    contour = shape.tree_contours(shape.tree_mask(img_original, picker))
+    img_tree, img_mask = shape.extract_tree(img_original, contour)
+    corners = shape.corners(img_original, contour)
+    score_shape = shape.score(corners)
+    img_contour = draw.contour(img_original.shape, contour)
+    # outline_img = draw.shape(img_original.shape, corners)
+    score_led, point_lst = leds.score(img_original)
+
+    score_color = 95
+    score_overall = sum([score_led, score_shape, score_color]) / 3
+    score_tup = Scores(score_overall, score_led, score_shape, score_color)
+    img_tup = None
+
+    if images:
+        img_leds = draw.leds(img_original.shape, point_lst)
+        img_sketched = draw.sketch(img_contour.copy(), point_lst, corners)
+        img_tup = Images(img_original, img_leds, img_contour, img_sketched)
+
+    return score_tup, img_tup
 
 

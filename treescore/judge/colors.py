@@ -7,8 +7,14 @@ from collections import namedtuple
 from collections import Counter
 from collections import defaultdict
 import pickle
-import pyprind
 from . import utils
+
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GREEN = (127, 255, 0)
+BLUE = (255, 0, 0)
+RED = (0, 0, 255)
 
 
 class ColorPicker(object):
@@ -49,8 +55,7 @@ class ColorPicker(object):
 def extract_colors(img, pbar):
     """Returns all color tuples from the image"""
     colors = Counter()
-    itr = pbar and pyprind.prog_bar(img, title='Some Title') or img
-    for row in itr:
+    for row in img:
         colors.update([tuple(t) for t in row if sum(t) > 5 and sum(t) < 750])
     return colors
 
