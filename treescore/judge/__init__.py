@@ -47,7 +47,7 @@ def score(fname, picker, width=500, images=False):
     score_led, point_lst = leds.score(img_original)
 
     score_color = 95
-    score_overall = sum([score_led, score_shape, score_color]) / 3
+    score_overall = round(sum([score_led, score_shape, score_color]) / 3, 2)
     score_tup = Scores(score_overall, score_led, score_shape, score_color)
     img_tup = None
 
