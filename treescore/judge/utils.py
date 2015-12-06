@@ -11,6 +11,12 @@ def open_img(img_name):
     return cv2.imread(img_name)
 
 
+def save_images(img_tup, prefix):
+    """Save images to disc"""
+    for i, name in enumerate(img_tup._fields):
+        cv2.imwrite('{}_{}.png'.format(prefix,name), img_tup[i])
+
+
 def to_gray(img):
     """Converts an image to grayscale"""
     return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

@@ -101,7 +101,7 @@ def avg_dist_friends(dist_lst, num=3):
 
 def score(img):
     """Returns the led uniformity score for the image providede"""
-    gray = utils.to_gray(utils.resize(img, 500))
+    gray = utils.to_gray(img)
     cnt_img = extract_bright_regions(gray)
     pos_lst = contour_positions(cnt_img)
     return uniformity(pos_lst[:]), pos_lst
