@@ -1,7 +1,10 @@
 # treescore
 Score a Christmas Tree based on uniformity of lights, shape of tree, and colors used.
 
-Additional information here: http://christianreimer.github.io/treescore/
+Writeup with pretty pictures can be see at
+http://christianreimer.github.io/treescore/
+
+# Example
 
 ```python
 >>> import treescore
@@ -10,4 +13,31 @@ Additional information here: http://christianreimer.github.io/treescore/
 >>> scores, _ = treescore.judge.score(fname, picker)
 >>> print(scores)
 Scores(overall=92.33, led=84.74, shape=97.24, color=95.00)
+>>>
 ```
+
+```python
+>>> import treescore
+>>> fname = 'path/to/image/of/tree.png'
+>>> picker = treescore.ColorPicker.from_file('color.data')
+>>> scores, images = treescore.judge.score(fname, picker)
+>>> treescore.judge.utils.display_images(images)
+```
+
+# Installation
+
+OpenCV (http://opencv.org/) is used and you will need to install it. This will
+probably be the biggest challenge you will encounter. You can follow the
+instructions for python3 and OpenCV version 3 over at
+http://www.pyimagesearch.com/opencv-tutorials-resources-guides
+
+Once you have OpenCV and the python bindings installed, the rest should be as
+easy as
+```
+$ mkvirtualenv treescore
+$ git clone https://github.com/christianreimer/treescore.git
+$ cd treescore
+$ pip install requirements.txt
+$
+```
+
