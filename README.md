@@ -27,6 +27,8 @@ Scores(overall=92.33, led=84.74, shape=97.24, color=95.00)
 
 This should display images such as the following (depending on your tree of
 course)
+![original image](readme/readme_original.png)
+![original image](../readme/readme_original.png)
 
 
 # Installation
