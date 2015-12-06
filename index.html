@@ -18,20 +18,24 @@
         <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/Sad_Tree.jpg'/>
         <br><br>
         <h1>Treescore</h1>
-        <p>Score a Christmas Tree based on uniformity of lights, shape of tree, and colors used.</p>
+        <p>
+          Score a Christmas Tree based on uniformity of lights, shape of tree, and colors used. 
+        </p>
 
         <p class="view"><a href="https://github.com/christianreimer/treescore">View the Project on GitHub <small>christianreimer/treescore</small></a></p>
 
       </header>
       <section>
         <h2>
-          Computer Vision to Amuse and Delight
+          Computer Vision to Delight and Amuse
         </h2>
         
         <p>
-          Obsessing over the distribution of your Christman Twingle Lights? Wondering if your tree is standing 
-          straight, or maybe leaning just a little bit to wards the wall? Too many red ribbons? Not enough glitter? 
-          Too many ornaments over here and a big gap over there?
+          Obsessing over the distribution of your Christmas Twinkle Lights? Wondering if your tree is standing straight, or maybe leaning just a little bit towards the wall? Too many red ribbons? Not enough glitter? Too many ornaments over here and a big gap over there?
+        </p>
+        
+        <p>
+          Let us use computer vision to try and answer come of these questions.
         </p>
         
         <h3>
@@ -39,11 +43,7 @@
         </h3>
         
         <p>
-          To detemine the uniformity of the lights on the tree, I first locate all the lights by identifying the 
-          brightest regions of the image, and assume the center of each region correspond to a light. Then, for each light, 
-          I take the average distance between that light and its three closest neighbors. Finally, I take the standard 
-          deviation of all these averages. In addition, I want to reward trees that have more lights (while still maintaining 
-          uniformity), so the score is scaled up by the number of lights.
+          To determine the uniformity of the lights on the tree, I first locate all the lights by identifying the brightest regions of the image (the lights). Then, for each light, I take the average distance between that light and its three closest neighbors. Finally, I take the standard deviation of all these averages. In addition, I want to reward trees that have more lights (while still maintaining uniformity), so the score is scaled up by the number of lights.
         </p>
         
         <p>
@@ -56,10 +56,7 @@
         </h3>
         
         <p>
-          The shape of the tree is compared to a triangle with the ratio of XX/YY. Where did that come from? I measured 
-          a picture of a trees that I found to be visually appealing ... Yes, completely subjective. In addition to judging 
-          the height/width ratio, I compare the observed angle of the tree (from the middle point between bottom left and 
-          bottom right corners to the top) with a vertical line and calculate the angle in degrees.
+          The shape of the tree is compared to a triangle with the ratio of 4/1. Where did that come from? I measured a picture of a trees that I found to be visually appealing ... Yes, completely subjective. In addition to judging the height/width ratio, I compare the observed angle of the tree (from the middle point between the bottom left and bottom right corners to the top) with a vertical line and calculate the angle in degrees.
         </p>
         
         <p>
@@ -72,8 +69,7 @@
         </h3>
         
         <p>
-          The ideal Christmas colors are green, red, gold, and white. I somewhat arbitrarely decidede that a pleasent 
-          distribution of colors was 50% green, 20% red, 20% gold, and 10% white. So that is what I am scoring on.
+          The ideal Christmas colors are green, red, gold, and white. I somewhat arbitrarily decided that a pleasant distribution of colors was 50% green, 20% red, 20% gold, and 10% white. So that is what I am scoring on.
         </p>
         
         <p>
@@ -100,68 +96,59 @@
         </h2>
         
         <p>
-          Start out with an images of a lovely tree.
+          Start out with an image of a lovely tree.
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/image.png'/>
         </p>
     
         <p>
-          To locate the lights, a threshold is applied to the image to find the brightest regions in the image.
+          To locate the lights, a threshold is applied to find the brightest regions in the image.
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/leds.png'/>
         </p>
         
         <p>  
-          The center of each bright region is found and the (x, y) coordinates determined. At this point it is 
-          simply a matter of treating the lights as points in a plane to determine the distance.
+          The center of each bright region is found and the (x, y) coordinates determined. At this point it is simply a matter of treating the lights as points in a plane to determine the distance.
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/dots.png'/>
           <pre><code>light_score: 84.74</code></pre>
         </p>
         
         <p>
-          To determine the shape of the tree, a color filter is applied which attempts to detect all gren pixels in the 
-          images and blank out everything else. This modified images is then transformed into a binary mask.
+          To determine the shape of the tree, a color filter is applied which attempts to detect all green pixels in the image and blank out everything else. This modified images is then transformed into a binary mask.
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/mask.png'/>
         </p>
         
         <p>
-          Once the mask has been determined, a contour is found on the binary image.
+          Once the mask has been determined, a contour is found on the binary image. This contour should correspond to the outline of the tree.
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/contour.png'/>
         </p>
         
         <p>
-          At this point, I assume the tree is the main focus of the image. Thus the bottom right corner of the tree is 
-          the point on the contour closest to the bottom right corner of th image. Similar logic for the bottom left corner. The top 
-          of the tree is the midpoint of the highest points on the contour.
+           At this point, I assume the tree is the main focus of the image. Thus the bottom right corner of the tree is the point on the contour closest to the bottom right corner of the image. Similar logic for the bottom left corner. The top of the tree is the midpoint (average x) of the highest points (lowest y) on the contour.
         </p>
         
         <p>
-          With the corners determined, an outline of the tree can be drawn, as well as the observed line from center 
-          bottom to the top.
+          With the corners determined, an outline of the tree can be drawn, as well as the observed line from center bottom to the top.
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/outline.png'/>
           <pre><code>shape_score: 97.24</code></pre>
         </p>
   
         <p>
-          For the color component lets use another tree, since the tree above is not decorated. In case caes, a lovely tree
-          in a living room.
+          For the color component lets use another tree, since the tree above is not decorated. In this case, a lovely tree in a living room.
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/tree2.png'/>
         </p>
         
         <p>
-          Once again, an attempt is made to cut out the tree itself. This time the mask is a bit less presice since there it 
-          a fair amount of noice in the image.
+          Once again, an attempt is made to cut out the tree itself. This time the mask is a bit less precise since there it a fair amount of noise in the image.
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/tree_mask.png'/>
         </p>
         
         <p>
-          The mask is then used to remove everything except for the tree, and the remaining image is categorixed into green,
-          red, gold, and white.
+          The mask is then used to remove everything except for the tree, and the remaining image is categorized into green, red, gold, and white.
           <img src='https://raw.githubusercontent.com/christianreimer/treescore/gh-pages/tree_cut.png'/>
         </p>
   
         <p>
-          Finally the observed color ratios are compared with the idea ratio. In this case, the tree is spot on with regards 
-          to gree, but is lacking red and has too much white.
-        <pre><code>color_score: 70 (green:50.0% white:25.0% gold:16.7% red:8.3%)</code></pre>
+          Finally the observed color ratios are compared with the ideal ratio. In this case, the tree is spot on with regards to green, but is lacking red and has too much white.
+          <pre><code>color_score: 70 (green:50.0% white:25.0% gold:16.7% red:8.3%)</code></pre>
         </p>
         
       </section>
