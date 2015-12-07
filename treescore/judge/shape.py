@@ -118,5 +118,7 @@ def score(corners):
     ideal_ratio = 4
     ratio = height_width_ratio(corners)
     ang_degrees = angle(corners)
-    return 100 - abs(ideal_ratio - ratio) * ang_degrees
+    raw_score = 100 - abs(ideal_ratio - ratio) * ang_degrees
+    return max(int(round(raw_score)), 0)
+
 

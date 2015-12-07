@@ -104,5 +104,7 @@ def score(img):
     gray = utils.to_gray(img)
     cnt_img = extract_bright_regions(gray)
     pos_lst = contour_positions(cnt_img)
-    return uniformity(pos_lst[:]), pos_lst
+    raw_score = uniformity(pos_lst[:])
+    round_score = max(int(round(raw_score)), 0)
+    return round_score, pos_lst
 

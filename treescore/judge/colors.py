@@ -87,7 +87,7 @@ def apply_color_mask(img, color, picker):
     return mask
 
 
-def color_ratios(img, picker, ignore=None):
+def ratios(img, picker, ignore=None):
     ratios = {'green': 0, 'red': 0, 'gold': 0, 'white': 0, 'black': 0, 'other': 0}
     for color in utils.tuples(img):
         ratios[picker.guess(color)] += 1
@@ -98,6 +98,7 @@ def color_ratios(img, picker, ignore=None):
 
 
 def score(ratios):
+    """Return the deviation between observed and ideal ratios"""
     ratios.pop('black', None)
     ratios.pop('other', None)
     s = sum(ratios.values())
@@ -111,5 +112,6 @@ def score(ratios):
              'gold': 20.0,
              'white': 10.0}
 
-    return 100 - sum([abs(ideal[c] - observed[c]) for c in ideal])
+    raw_score = 100 - sum([abs(ideal[c] - observed[c]) for c in ideal])
+    return max(int(round(raw_score)), 0)
 
