@@ -4,27 +4,43 @@
 Extract colors from source images
 
 Usage:
-    ranger update --fname=<n> --color=<c> --path=<p> [--fub=<u>] [--flb=<l>]
-    ranger new --fname=<n> --color=<c> --path=<p> [--fub=<u>] [--flb=<l>]
+    ranger update --fname=<n> --path=<p> [--fub=<u>] [--flb=<l>]
+    ranger new --fname=<n> --path=<p> [--fub=<u>] [--flb=<l>]
     ranger -h | --help
 
 Options:
-    --fname=<n> name to from from and save to
-    --color=<c> color to classify tuples as
+    --fname=<n> name to load from and save to
     --path=<p>  path to image files
-    --fub=<u>   filter upper bound [default: 750]
-    --flb=<l>   filter lower bound [default: 15]
+    --fub=<u>   filter upper bound [default: 740]
+    --flb=<l>   filter lower bound [default: 25]
 """
 
 __author__ = "Christian Reimer"
 __version__ = "0.0.2"
 
-from docopt import docopt
 import glob
+import os
+from collections import Counter
+
+from docopt import docopt
+
 from treescore.judge import colors
 from treescore.judge import utils
-from collections import Counter
-import cv2
+
+
+def extract_color(fnames, picker, color, img_filter):
+    """Extract colors from the files and update the picker"""
+    color_count = Counter()
+    for fname in fnames:
+        print('Extracting {} from {}'.format(color, fname))
+        img = utils.resize(utils.open_img(fname), 500)
+        color_count.update(img_filter(img))
+        img = utils.blur(img, (3, 3))
+        color_count.update(img_filter(img))
+    total = sum(color_count.values())
+    ratios = Counter({t: v / total for t, v in color_count.items()})
+    picker.set_ratios(color, ratios)
+    return picker
 
 
 def main(args):
@@ -32,24 +48,26 @@ def main(args):
         print('Loading color picker from {}'.format(args['--fname']))
         picker = colors.ColorPicker.from_file(args['--fname'])
     else:
+        print('Creating new color picker file')
         picker = colors.ColorPicker()
 
-    fnames = glob.glob(args['--path'])
-    print('Will proces {} images to define {}'.format(
-        len(fnames), args['--color']))
+    img_filter = utils.filtered_tuples(int(args['--flb']), int(args['--fub']))
 
-    color_count = Counter()
+    fnames = glob.glob(args['--path'])
+    print('Will proces {} images to define colors'.format(len(fnames)))
+
+    fname_map = {}
     for fname in fnames:
-        print('Processing {}'.format(fname))
-        # img = utils.blur(utils.resize(utils.open_img(fname), 500), (5, 5))
-        # img = utils.resize(utils.open_img(fname), 500)
-        img = utils.open_img(fname)
-        img_filter = utils.filtered_tuples(
-            int(args['--flb']), int(args['--fub']))
-        color_count.update(img_filter(img))
-    total = sum(color_count.values())
-    ratios = Counter({t: v / total for t, v in color_count.items()})
-    picker.set_ratios(args['--color'], ratios)
+        #print('fname={}'.format(fname))
+        color = os.path.split(os.path.split(fname)[0])[1]
+        #print('color={}'.format(color))
+        fname_lst = fname_map.get(color, [])
+        #print('fname_lst={}'.format(fname_lst))
+        fname_lst.append(fname)
+        fname_map[color] = fname_lst
+
+    for color in fname_map:
+        picker = extract_color(fname_map[color], picker, color, img_filter)
 
     print('Saving color picker as {}'.format(args['--fname']))
     picker.save(args['--fname'])

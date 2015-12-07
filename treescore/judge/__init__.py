@@ -47,7 +47,8 @@ def score(fname, picker, width=500, images=False):
 
     if images:
         img_leds = draw.leds(img_original.shape, point_lst)
-        img_sketched = draw.sketch(img_contour.copy(), point_lst, corners)
+        img_gray = draw.contour_overlay(img_original.copy(), contour)
+        img_sketched = draw.sketch(img_gray, point_lst, corners)
         img_tup = Images(img_original, img_leds, img_contour, img_sketched)
 
     return score_tup, img_tup

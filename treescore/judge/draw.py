@@ -23,13 +23,21 @@ def contour(img_shape, contour):
     return blank
 
 
+def contour_overlay(img, contour):
+    """Draw contour as overlay on grayscale image"""
+    img = utils.to_gray(img)
+    img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+    cv2.drawContours(img, [contour], 0, colors.CYAN, 1)
+    return img
+
+
 def sketch(img, dots, corners):
     """Draw the lights and lines on the images"""
     for dot in dots:
         cv2.circle(img, dot, 2, colors.RED, -1)
 
     for corner in corners:
-        cv2.circle(img, corner, 8, colors.BLUE, -1)
+        cv2.circle(img, corner, 5, colors.BLUE, -1)
 
     for corner1, corner2 in itertools.combinations(corners, 2):
         cv2.line(img, corner1, corner2, colors.GREEN, thickness=2)
