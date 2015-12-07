@@ -10,19 +10,11 @@ http://christianreimer.github.io/treescore/
 >>> import treescore
 >>> fname = 'path/to/image/of/tree.png'
 >>> picker = treescore.ColorPicker.from_file('color.data')
->>> scores, _ = treescore.judge.score(fname, picker)
+>>> scores, images = treescore.judge.score(fname, picker, images=True)
 >>> print(scores)
-Scores(overall=92.33, led=84.74, shape=97.24, color=95.00)
->>>
-```
-
-## Example with Images
-```python
->>> import treescore
->>> fname = 'path/to/image/of/tree.png'
->>> picker = treescore.ColorPicker.from_file('color.data')
->>> _, images = treescore.judge.score(fname, picker, width=500, images=True)
+Scores(overall=75, led=84, shape=97, color=45)
 >>> treescore.judge.utils.display_images(images)
+>>>
 ```
 
 This should display images such as the following (depending on your tree of
