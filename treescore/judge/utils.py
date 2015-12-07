@@ -53,6 +53,7 @@ def display_images(img_lst):
 
 
 def resize(img, width=None, height=None):
+    """Resize a image to the specified width or height"""
     if width:
         ratio = width / img.shape[1]
         dim = (width, int(round(img.shape[0] * ratio)))
@@ -65,24 +66,8 @@ def resize(img, width=None, height=None):
 
 
 def blur(img, kernel):
+    """Blur image as per the specified kernel"""
     return cv2.GaussianBlur(img, kernel, 0)
-
-
-def get_color_range(img):
-    """Return lower and upper bound GBR color ranges from the supplied image"""
-    lower = {'g': 255, 'b': 255, 'r': 255}
-    upper = {'g': 0, 'b': 0, 'r': 0}
-    color_index = ['g', 'b', 'r']
-
-    for row in img:
-        for col in row:
-            for i in range(3):
-                name = color_index[i]
-                lower[name] = min(col[i], lower[name])
-                upper[name] = max(col[i], upper[name])
-    upper_range = (upper['g'], upper['b'], upper['r'])
-    lower_range = (lower['g'], lower['b'], lower['r'])
-    return lower_range, upper_range
 
 
 def extract_colors(img):
@@ -106,23 +91,21 @@ def get_all_colors(image_names):
     return aggregate
 
 
-
 def points(cnt):
-    """Returns an iterator that produces (x, y) coordinates from a countour
-    array"""
+    """Return iterator that produces (x,y) coordinates from a countour array"""
     for c in cnt:
         yield tuple(c[0])
 
 
 def tuples(img):
-    """Returns an iterator that produdes (b, g, r) tuples from an image"""
+    """Return iterator that produdes (b,g,r) tuples from an image"""
     for row in img:
         for col in row:
             yield tuple(col)
 
 
 def filtered_tuples(lower, upper):
-    """Returns a function that can be used to iterate over an image (an array
+    """Return function that can be used to iterate over an image (an array
     of tuples) that will only return the tuples that fall between the lower
     and upper bounds"""
     def func(img):
@@ -131,23 +114,4 @@ def filtered_tuples(lower, upper):
                 if sum(col) > lower and sum(col) < upper:
                     yield tuple(col)
     return func
-
-
-def hsv_filtered_tuples(img):
-    for row in img:
-        for col in row:
-            if col[2] < 4:
-                # too drark
-                continue
-            if col[2] > 251:
-                # too light
-                continue
-            yield tuple(col)
-
-
-
-def counter_ratios(cnt):
-    """Returns a new counter with each value turned into a ratio"""
-    total = sum(cnt.values())
-    return Counter({t: v / total for t, v in cnt.items()})
 

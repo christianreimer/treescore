@@ -60,23 +60,6 @@ def extract_colors(img, pbar):
     return colors
 
 
-def extract_all_colors(fname_lst, pbar=False):
-    """Extracts all colors from all images and then constucts an aggregate
-    counter with the composite data"""
-    color_set = set()
-    agg_counter = Counter()
-    for fname in fname_lst:
-        img = utils.resize(utils.open_img(fname), 500)
-        agg_counter.update(extract_colors(img, pbar))
-    return agg_counter
-
-
-def counter_to_ratio(cnt):
-    """Converts the obvervations in the counter to ratios of the total"""
-    total = sum(cnt.values())
-    return Counter({t: v/total for t, v in cnt.items()})
-
-
 def apply_color_mask(img, color, picker):
     """Removes all pixels from the image that is not part of the specified
     color"""

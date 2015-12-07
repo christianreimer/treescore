@@ -1,12 +1,5 @@
 """
 Runs the Treescore judging process
-
-- Load the image and resize it down
-- Run the outline process to create a binary mask
-- Apply mask to find tree
-- Extract the color ratios from the tree
-- Calculate the light uniformity score
-- Calculate the shape from the mask
 """
 
 from . import utils
@@ -58,5 +51,4 @@ def score(fname, picker, width=500, images=False):
         img_tup = Images(img_original, img_leds, img_contour, img_sketched)
 
     return score_tup, img_tup
-
 

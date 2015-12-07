@@ -5,6 +5,7 @@ from collections import namedtuple
 import math
 import numpy as np
 
+
 def tree_mask(img, picker):
     """Returns a threshold mask of the tree"""
     mask = colors.apply_color_mask(img, 'green', picker)
@@ -25,26 +26,8 @@ def extract_tree(img, contour):
 
 def tree_contours(mask):
     """Returns the contours of the tree"""
-    #edged = cv2.Canny(mask, 75, 200)
     _, cnts, _ = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     return sorted(cnts, key=cv2.contourArea, reverse=True)[0]
-    return cnts
-
-
-def find_bounds(countour_lst):
-    """Finds the right, left, top, and bottom most points in the countour"""
-    right, left, top, bottom, point = 0, 999, 999, 0, (None, None)
-    for contour in contour_lst:
-        for point in utils.points(contour):
-            if y < top:
-                point = (x, y)
-            right = max(x, right)
-            left = min(x, left)
-            top = min(y, top)
-            bottom = max(y, bottom)
-
-    Bounds = namedtuple('Bounds', 'right left top bottom point')
-    return Bounds(right, left, top, bottom, point)
 
 
 def height_width_ratio(corners):
