@@ -60,23 +60,6 @@ def extract_colors(img, pbar):
     return colors
 
 
-def extract_all_colors(fname_lst, pbar=False):
-    """Extracts all colors from all images and then constucts an aggregate
-    counter with the composite data"""
-    color_set = set()
-    agg_counter = Counter()
-    for fname in fname_lst:
-        img = utils.resize(utils.open_img(fname), 500)
-        agg_counter.update(extract_colors(img, pbar))
-    return agg_counter
-
-
-def counter_to_ratio(cnt):
-    """Converts the obvervations in the counter to ratios of the total"""
-    total = sum(cnt.values())
-    return Counter({t: v/total for t, v in cnt.items()})
-
-
 def apply_color_mask(img, color, picker):
     """Removes all pixels from the image that is not part of the specified
     color"""
@@ -87,7 +70,7 @@ def apply_color_mask(img, color, picker):
     return mask
 
 
-def color_ratios(img, picker, ignore=None):
+def ratios(img, picker, ignore=None):
     ratios = {'green': 0, 'red': 0, 'gold': 0, 'white': 0, 'black': 0, 'other': 0}
     for color in utils.tuples(img):
         ratios[picker.guess(color)] += 1
@@ -98,6 +81,7 @@ def color_ratios(img, picker, ignore=None):
 
 
 def score(ratios):
+    """Return the deviation between observed and ideal ratios"""
     ratios.pop('black', None)
     ratios.pop('other', None)
     s = sum(ratios.values())
@@ -111,5 +95,6 @@ def score(ratios):
              'gold': 20.0,
              'white': 10.0}
 
-    return 100 - sum([abs(ideal[c] - observed[c]) for c in ideal])
+    raw_score = 100 - sum([abs(ideal[c] - observed[c]) for c in ideal])
+    return max(int(round(raw_score)), 0)
 

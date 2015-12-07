@@ -1,12 +1,5 @@
 """
 Runs the Treescore judging process
-
-- Load the image and resize it down
-- Run the outline process to create a binary mask
-- Apply mask to find tree
-- Extract the color ratios from the tree
-- Calculate the light uniformity score
-- Calculate the shape from the mask
 """
 
 from . import utils
@@ -18,7 +11,7 @@ from . import draw
 from collections import namedtuple
 
 Scores = namedtuple('Scores', 'overall led shape color')
-Images = namedtuple('Image', 'original leds contour sketched')
+Images = namedtuple('Images', 'original leds contour sketched')
 
 
 def score(fname, picker, width=500, images=False):
@@ -43,11 +36,12 @@ def score(fname, picker, width=500, images=False):
     corners = shape.corners(img_original, contour)
     score_shape = shape.score(corners)
     img_contour = draw.contour(img_original.shape, contour)
-    # outline_img = draw.shape(img_original.shape, corners)
     score_led, point_lst = leds.score(img_original)
 
-    score_color = 95
-    score_overall = round(sum([score_led, score_shape, score_color]) / 3, 2)
+    ratios = colors.ratios(img_original, picker)
+    score_color = colors.score(ratios)
+
+    score_overall = int(round(sum([score_led, score_shape, score_color]) / 3))
     score_tup = Scores(score_overall, score_led, score_shape, score_color)
     img_tup = None
 
@@ -57,5 +51,4 @@ def score(fname, picker, width=500, images=False):
         img_tup = Images(img_original, img_leds, img_contour, img_sketched)
 
     return score_tup, img_tup
-
 

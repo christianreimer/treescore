@@ -1,81 +1,64 @@
 """
-Functions to draw an outline of the tree based on the corners detected. Will
-ensure the produced image is cropped so that the tree is centered.
-
+Functionality to draw using OpenCV functionality.
 """
-
-# Notes:
-# img.shape = (height, width, depth)
-# image coordinates (0, 0) = top left
-# image coordinates (width, height) = bottom right
-
 
 from collections import namedtuple
 import itertools
 import numpy as np
 import cv2
 from . import utils
+from . import colors
+
+
+def blank_canvas(shape, color):
+    """Return a blank canvas of the specified shape and color"""
+    blank = np.array([color] * shape[0] * shape[1], dtype=np.uint8)
+    return blank.reshape(shape)
 
 
 def contour(img_shape, contour):
     """Draw black contour on white image"""
-    blank = np.array([(255,255,255)] * img_shape[0] * img_shape[1],
-                    dtype=np.uint8)
-    blank = blank.reshape(img_shape)
-
-    black = (0, 0, 0)
-    cv2.drawContours(blank, [contour], 0, black, 3)
+    blank = blank_canvas(img_shape, colors.WHITE)
+    cv2.drawContours(blank, [contour], 0, colors.BLACK, 3)
     return blank
 
 
 def sketch(img, dots, corners):
-    """Draws the lights and lines on the img"""
-    red = (0, 0, 255)
+    """Draw the lights and lines on the images"""
     for dot in dots:
-        cv2.circle(img, dot, 2, red, -1)
+        cv2.circle(img, dot, 2, colors.RED, -1)
 
-    blue = (255, 0, 0)
     for corner in corners:
-        cv2.circle(img, corner, 8, blue, -1)
+        cv2.circle(img, corner, 8, colors.BLUE, -1)
 
-    green = (127, 255, 0)
     for corner1, corner2 in itertools.combinations(corners, 2):
-        cv2.line(img, corner1, corner2, green, thickness=2)
-    cv2.line(img, corners.bottom_mid, corners.top, green, thickness=2)
+        cv2.line(img, corner1, corner2, colors.GREEN, thickness=2)
+    cv2.line(img, corners.bottom_mid, corners.top, colors.GREEN, thickness=2)
 
     return img
 
 
 def leds(img_shape, dots):
-    """Draw red dots on a white image"""
-    # Create an empty white image of the same size as the orginal image
-    color = (0, 0, 0)
-    blank = np.array([(255,255,255)] * img_shape[0] * img_shape[1],
-                    dtype=np.uint8)
-    blank = blank.reshape(img_shape)
-
+    """Draw dots on a white image"""
+    blank = blank_canvas(img_shape, colors.WHITE)
     for (x, y) in dots:
-       cv2.circle(blank, (x, y), 2, color, -1)
+       cv2.circle(blank, (x, y), 2, colors.BLUE, -1)
     return blank
 
 
 def outline(img_shape, corners):
-    """Draws the outline on the image"""
-    # Create an empty white image of the same size as the orginal image
-    color = (0, 0, 0)
-    blank = np.array([(255,255,255)] * img_shape[0] * img_shape[1],
-                    dtype=np.uint8)
-    blank = blank.reshape(img_shape)
+    """Draw the outline on the image"""
+    blank = blank_canvas(img_shape, colors.WHITE)
 
     # Draw cirles for the corners and connect them with lines to create a
     # stylized tree
     for corner in corners:
-        cv2.circle(blank, corner, 5, color, -1)
+        cv2.circle(blank, corner, 5, colors.BLACK, -1)
 
     for corner1, corner2 in itertools.combinations(corners, 2):
-        cv2.line(blank, corner1, corner2, color, thickness=2)
+        cv2.line(blank, corner1, corner2, colors.BLACK, thickness=2)
 
-    cv2.line(blank, corners.bottom_mid, corners.top, color, thickness=2)
+    cv2.line(blank, corners.bottom_mid, corners.top, colors.BLACK, thickness=2)
     return blank
 
 

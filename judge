@@ -4,19 +4,14 @@
 Test runner for the treescore application
 
 Usage:
-    judge run --fname-<f> --images=<p> [--save] [--width=<w>]
-    judge score --fname=<f> --images=<p>
-    judge colors [--fname=<f>] --images=<p>
-    judge corners [--fname=<f>] --images=<p>
-    judge lights [--fname=<f>] --images=<p>
-    judge shape [--fname=<f>] --images=<p>
-    judge pages [--fname=<f>] --images=<p>
+    judge --fname=<f> --images=<p> [--save] [--width=<w>] [--prefix=<pf>]
 
 Options:
     --fname=<f>     Name of the colorpicker file [default: colors.data]
     --images=<p>    Path to the image(s) to process
     --width=<w>     Width to resize images go [default: 500]
     --save          Save putput images
+    --prefix=<pf>   Prefix for image files [default: tmp]
 """
 
 
@@ -24,114 +19,22 @@ __version__ = "0.0.1"
 
 from docopt import docopt
 import glob
-from treescore import judge
-from treescore.judge import draw
-from treescore.judge import leds
-from treescore.judge.utils import display_img
-from treescore.judge.utils import display_images
-import cv2
-import math
-import numpy as np
+import treescore
 
-
-def run(fnames, picker, width=500, save=False):
-    """Runs the entire scoring process"""
-    for fname in fnames:
-        img = judge.utils.resize(judge.utils.open_img(fname), width=500)
-
-
-
-def shape(fnames, picker):
-    for fname in fnames:
-        img = judge.utils.resize(judge.utils.open_img(fname), width=500)
-        mask = judge.shape.tree_mask(img, picker)
-        img_floodfill = mask.copy()
-        h, w = mask.shape[:2]
-        mask2 = np.zeros((h+2, w+2), np.uint8)
-        cv2.floodFill(img_floodfill, mask2, (0,0), 255);
-        img_floodfill_inv = cv2.bitwise_not(img_floodfill)
-        img_out = mask | img_floodfill_inv
-        display_images([img, mask, img_out])
-        cv2.imwrite('image.png', img)
-        cv2.imwrite('mask.png', img_out)
-
-
-def corners(fnames, picker):
-    """Run the corners/angle calculation"""
-    for fname in fnames:
-        img = judge.utils.resize(judge.utils.open_img(fname), width=500)
-        mask = judge.shape.tree_mask(img, picker)
-        tree = judge.shape.extract_tree(img, mask)
-        contours = judge.shape.tree_contours(mask)
-        corners = judge.shape.corners(img, [contours])
-        outline = judge.draw.draw_shape(img.shape, corners)
-        display_images([img, mask, tree, outline])
-        cv2.imwrite('outline.png', outline)
-
-
-def colors(fnames, picker):
-    for fname in fnames:
-        img = judge.utils.resize(judge.utils.open_img(fname), width=500)
-        img = judge.utils.to_hsv(img)
-        r = judge.colors.color_ratios(img, picker)
-        total = sum((r['green'], r['gold'], r['white'], r['red']))
-        print('{0}: green:{1:.2f} red:{2:.2f} gold:{3:.2f} white:{4:.2f}'.format(
-            fname,
-            100 * r['green']/total,
-            100 * r['red']/total,
-            100 * r['gold']/total,
-            100 * r['white']/total))
-
-
-def fill_hole(fname):
-    img = judge.utils.resize(judge.utils.open_img(fname), width=500)
-    th, im_th = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY_INV);
-    im_floodfill = im_th.copy()
-    h, w = im_th.shape[:2]
-    mask = np.zeros((h+2, w+2), np.uint8)
-    cv2.floodFill(im_floodfill, mask, (0,0), 255);
-    im_floodfill_inv = cv2.bitwise_not(im_floodfill)
-    im_out = im_th | im_floodfill_inv
-    display_img(im_out)
-
-
-def lights(fnames, picker):
-    for fname in fnames:
-        img = judge.utils.resize(judge.utils.open_img(fname), width=500)
-        mask = judge.shape.tree_mask(img, picker)
-        tree = judge.shape.extract_tree(img, mask)
-        score, leds_img = judge.leds.score(tree)
-        pos_lst = leds.contour_positions(tree)
-        dot_img = draw.draw_dots(img.shape, pos_lst)
-        cv2.imwrite('leds.png', leds_img)
-        cv2.imwrite('dots.png', dot_img)
-
-
-def pages(fnames, picker):
-    lights(fnames, picker)
-    shape(fnames, picker)
-    corners(fnames, picker)
 
 def main(args):
     fnames = glob.glob(args['--images'])
-    picker = judge.ColorPicker.from_file(args['--fname'])
+    picker = treescore.ColorPicker.from_file(args['--fname'])
 
-    if args['lights']:
-        lights(fnames, picker)
-        return
+    for fname in fnames:
+        scores, images = treescore.judge.score(
+            fname, picker, width=int(args['--width']), images=True)
 
-    if args['corners']:
-        corners(fnames, picker)
+        if args['--save']:
+            treescore.judge.utils.save_images(images, args['--prefix'])
 
-    if args['colors']:
-        colors(fnames, picker)
-
-    if args['shape']:
-        shape(fnames, picker)
-
-    if args['pages']:
-        pages(fnames, picker)
-
+        treescore.judge.utils.display_images(images)
+        print('{} {}'.format(fname, scores))
 
 
 if __name__=="__main__":
