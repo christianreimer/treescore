@@ -58,11 +58,8 @@ def main(args):
 
     fname_map = {}
     for fname in fnames:
-        #print('fname={}'.format(fname))
         color = os.path.split(os.path.split(fname)[0])[1]
-        #print('color={}'.format(color))
         fname_lst = fname_map.get(color, [])
-        #print('fname_lst={}'.format(fname_lst))
         fname_lst.append(fname)
         fname_map[color] = fname_lst
 

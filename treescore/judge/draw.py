@@ -27,7 +27,7 @@ def contour_overlay(img, contour):
     """Draw contour as overlay on grayscale image"""
     img = utils.to_gray(img)
     img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-    cv2.drawContours(img, [contour], 0, colors.CYAN, 1)
+    cv2.drawContours(img, [contour], 0, colors.CYAN, 2)
     return img
 
 

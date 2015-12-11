@@ -66,3 +66,6 @@ target/
 
 # Swap files
 *.swp
+
+# Creds files
+*.secret
