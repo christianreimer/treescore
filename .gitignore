@@ -63,9 +63,15 @@ target/
 
 # Color Data
 *.data
+data/
 
 # Swap files
 *.swp
 
 # Creds files
 *.secret
+
+# Junk
+.DS_Store
+*.gz
+model*npy

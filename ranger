@@ -6,6 +6,7 @@ Extract colors from source images
 Usage:
     ranger update --fname=<n> --path=<p> [--fub=<u>] [--flb=<l>]
     ranger new --fname=<n> --path=<p> [--fub=<u>] [--flb=<l>]
+    ranger regression --fname=<n> --path=<p>
     ranger -h | --help
 
 Options:
@@ -16,7 +17,7 @@ Options:
 """
 
 __author__ = "Christian Reimer"
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 import glob
 import os
@@ -26,6 +27,33 @@ from docopt import docopt
 
 from treescore.judge import colors
 from treescore.judge import utils
+
+
+def regression(args):
+    """Creates a training data file for regression"""
+    fnames = glob.glob(args['--path'])
+    ofile = open(args['--fname'], 'w')
+    ofile.write('Color,Blue,Green,Red\n')
+
+    img_filter = utils.filtered_tuples(int(args['--flb']), int(args['--fub']))
+
+    for fname in fnames:
+        color = os.path.split(os.path.split(fname)[0])[1]
+        print('Processing {}'.format(fname))
+
+        if color == 'black':
+            img_filter = utils.filtered_tuples(0, 740)
+        elif color == 'white':
+            img_filter = utils.filtered_tuples(25, 999)
+        else:
+            img_filter = utils.filtered_tuples(25, 740)
+
+        img = utils.resize(utils.open_img(fname), width=500)
+
+        for tup in img_filter(img):
+            ofile.write('{},{},{},{}\n'.format(
+                color, tup[0], tup[1], tup[2]))
+    ofile.close()
 
 
 def extract_color(fnames, picker, color, img_filter):
@@ -47,9 +75,12 @@ def main(args):
     if args['update']:
         print('Loading color picker from {}'.format(args['--fname']))
         picker = colors.ColorPicker.from_file(args['--fname'])
-    else:
+    elif args['new']:
         print('Creating new color picker file')
         picker = colors.ColorPicker()
+    elif args['regression']:
+        regression(args)
+        return
 
     img_filter = utils.filtered_tuples(int(args['--flb']), int(args['--fub']))
 

@@ -101,7 +101,7 @@ def tuples(img):
     """Return iterator that produdes (b,g,r) tuples from an image"""
     for row in img:
         for col in row:
-            yield tuple(col)
+            yield (col)  # tuple(col)
 
 
 def filtered_tuples(lower, upper):

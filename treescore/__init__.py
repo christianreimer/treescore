@@ -5,4 +5,5 @@ __author__ = 'Christian Reimer'
 
 from . import judge
 from .judge.colors import ColorPicker
+from .judge.colors import RegressionColorPicker
 

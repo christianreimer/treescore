@@ -33,22 +33,21 @@ class Connection(object):
         tweet_lst = result['statuses']
         for tweet in tweet_lst:
             user = tweet['user']['screen_name']
+            if user == 'treescore':
+                print('Skipping my own post ....')
+                continue
             entity = tweet.get('entities', {})
             media_lst = entity.get('media', [])
             for media in media_lst:
                 if 'media_url' in media:
                     yield (user, media['media_url'])
 
-    def post(self, text, image1, image2):
+    def post(self, text, image):
         """Post new tweet with image attachment"""
-        with open(image1, 'rb') as imagefile:
-            img1 = imagefile.read()
-        with open(image2, 'rb') as imagefile:
-            img2 = imagefile.read()
-        id_img1 = self.upload.media.upload(media=img1)["media_id_string"]
-        id_img2 = self.upload.media.upload(media=img2)["media_id_string"]
-        self.api.statuses.update(
-            status=text, media_ids=','.join([id_img1, id_img2]))
+        with open(image, 'rb') as imagefile:
+            img = imagefile.read()
+        id_img = self.upload.media.upload(media=img)["media_id_string"]
+        self.api.statuses.update(status=text, media_ids=id_img)
 
     def fetch_image(self, url, fname):
         """Downloads an image from the specified URL"""

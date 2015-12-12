@@ -30,6 +30,11 @@ def tree_contours(mask):
     return sorted(cnts, key=cv2.contourArea, reverse=True)[0]
 
 
+def contour_area_ratio(img_shape, contour):
+    """Return the area of the contour"""
+    return cv2.contourArea(contour) / (img_shape[0] * img_shape[1])
+
+
 def height_width_ratio(corners):
     """Determines the ration between the height and width of the tree based on
     the corners of the tree"""
@@ -101,7 +106,7 @@ def score(corners):
     ideal_ratio = 4
     ratio = height_width_ratio(corners)
     ang_degrees = angle(corners)
-    raw_score = 100 - abs(ideal_ratio - ratio) * ang_degrees
+    raw_score = 100 - abs(ideal_ratio - ratio) * abs(ang_degrees)
     return max(int(round(raw_score)), 0)
 
 
