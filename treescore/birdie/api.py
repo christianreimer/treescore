@@ -33,9 +33,6 @@ class Connection(object):
         tweet_lst = result['statuses']
         for tweet in tweet_lst:
             user = tweet['user']['screen_name']
-            if user == 'treescore':
-                print('Skipping my own post ....')
-                continue
             entity = tweet.get('entities', {})
             media_lst = entity.get('media', [])
             for media in media_lst:

@@ -64,6 +64,7 @@ target/
 # Color Data
 *.data
 data/
+tmp/
 
 # Swap files
 *.swp

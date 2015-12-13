@@ -8,11 +8,11 @@ def scribe(score, name):
     return (
         'Hi @{}, nice #christmastree '
         'It has a #treescore of {} ('
-        'lights:{} shape:{}, color:{})'.format(
+        'lights:{} shape:{} color:{})'.format(
         name, score.overall, score.led, score.shape, score.color))
 
 
 def post_to_twitter(score):
     """Determine if the score should be posted to twitter"""
-    return all((score.overall > 50, score.area > 0.25)
+    return all((score.overall > 50, score.area > 0.25))
 

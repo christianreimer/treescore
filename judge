@@ -4,7 +4,8 @@
 Test runner for the treescore application
 
 Usage:
-    judge --fname=<f> --images=<p> [--save] [--width=<w>] [--prefix=<pf>]
+    judge twitter [--creds=<c>] [--work=<d>] [--hist=<h>] [--manual]
+    judge local --fname=<f> --images=<p> [--save] [--width=<w>] [--prefix=<pf>]
 
 Options:
     --fname=<f>     Name of the colorpicker file [default: colors.data]
@@ -12,17 +13,29 @@ Options:
     --width=<w>     Width to resize images go [default: 500]
     --save          Save putput images
     --prefix=<pf>   Prefix for image files [default: tmp]
+    --creds=<c>     Location of credentials file [default: creds.secret]
+    --work=<d>      Path to working directory [default: tmp]
+    --hist=<h>      Location of history file [default: history.data]
 """
 
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
-from docopt import docopt
+
 import glob
+import pickle
+
+import cv2
+from docopt import docopt
+from twitter import OAuth
+
 import treescore
+from treescore import birdie
+from treescore.judge import utils
 
 
-def main(args):
+def local(args):
+    """Run the treescore program with images from local disc"""
     fnames = glob.glob(args['--images'])
     picker = treescore.ColorPicker.from_file(args['--fname'])
 
@@ -37,8 +50,85 @@ def main(args):
         print('{} {}'.format(fname, scores))
 
 
+def twitter(args):
+    """Run the treescore program with images from twitter"""
+    with open(args['--creds'], 'rb') as pfile:
+        cred_map = pickle.load(pfile)
+        auth = OAuth(cred_map['token_key'],
+                     cred_map['token_sec'],
+                     cred_map['consumer_key'],
+                     cred_map['consumer_sec'])
+
+    with open(args['--hist'], 'rb') as pfile:
+        history_set = pickle.load(pfile)
+
+    picker = treescore.RegressionColorPicker.from_file('model.data')
+    con = birdie.Connection(twitter_creds=auth)
+
+    count = 0
+    skipped = 0
+    passed = 0
+    posted = 0
+
+    for user, image_url in con.images():
+        count += 1
+
+        if user == 'treescore':
+            print('Skipping own post {}:{}'.format(user, image_url))
+            skipped += 1
+            continue
+
+        if image_url in history_set:
+            print('Skipping url from history {}:{}'.format(user, image_url))
+            skipped += 1
+            continue
+        else:
+            history_set.add(image_url)
+
+        print('Scoring {}:{}'.format(user, image_url))
+        fname = "{}/{}".format(args['--work'], user)
+        con.fetch_image(image_url, fname)
+
+        try:
+            scores, _, image = treescore.judge.score(fname, picker, images=True)
+        except ValueError:
+            continue
+
+        should_post = birdie.post_to_twitter(scores)
+
+        if args['--manual']:
+            print('Should post: {}'.format(should_post))
+            print(scores)
+            utils.display_img(image)
+            answer = input('Post to Twitter (y/n)?: ')
+            should_post = answer in ('y', 'Y')
+
+        if should_post:
+            text = birdie.scribe(scores, user)
+            fname2 = "{}.composite.png".format(fname)
+            cv2.imwrite(fname2, image)
+            con.post(text, fname2)
+            print('Posted to twitter: {}'.format(text))
+            posted += 1
+        else:
+            passed += 1
+
+    with open(args['--hist'], 'wb') as pfile:
+        pickle.dump(history_set, pfile)
+
+    print('Processed {} images (skipped:{} posted:{} passed:{})'.format(
+        count, skipped, posted, passed))
+
+
+
 if __name__=="__main__":
     args = docopt(__doc__, version='Judge %s' % __version__ )
-    main(args)
+
+    if args['local']:
+        local(args)
+
+    if args['twitter']:
+        twitter(args)
+
 
 

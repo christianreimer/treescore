@@ -8,6 +8,9 @@ import twitter
 import cv2
 
 from .api import Connection
+from .scribe import post_to_twitter
+from .scribe import scribe
+
 from ..judge import utils
 from ..judge import shape
 from .. import judge
