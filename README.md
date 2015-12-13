@@ -9,23 +9,17 @@ http://christianreimer.github.io/treescore/
 ```python
 >>> import treescore
 >>> fname = 'path/to/image/of/tree.png'
->>> picker = treescore.ColorPicker.from_file('color.data')
->>> scores, images = treescore.judge.score(fname, picker, images=True)
+>>> picker = treescore.RegressionColorPicker.from_file('model.data')
+>>> scores, images, composite = treescore.judge.score(fname, picker, images=True)
 >>> print(scores)
-Scores(overall=75, led=84, shape=97, color=45)
->>> treescore.judge.utils.display_images(images)
+Scores(overall=65, led=85, shape=97, color=12, area=0.290468)
+>>> treescore.judge.utils.display_img(composite)
 >>>
 ```
 
-This should display images such as the following (depending on your tree of
+This should display an image such as the following (depending on your tree of
 course)
-![original image](../readme/readme_original.png)
-
-![original image](../readme/readme_contour.png)
-
-![original image](../readme/readme_leds.png)
-
-![original image](../readme/readme_sketched.png)
+![original image](../readme/composite.png)
 
 
 # Installation
@@ -43,6 +37,7 @@ $ mkvirtualenv treescore
 $ git clone https://github.com/christianreimer/treescore.git
 $ cd treescore
 $ pip install requirements.txt
+$ ./judge --help
 $
 ```
 

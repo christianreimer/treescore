@@ -5,10 +5,10 @@ Test runner for the treescore application
 
 Usage:
     judge twitter [--creds=<c>] [--work=<d>] [--hist=<h>] [--manual]
-    judge local --fname=<f> --images=<p> [--save] [--width=<w>] [--prefix=<pf>]
+    judge local --model=<m> --images=<p> [--save] [--width=<w>] [--prefix=<pf>]
 
 Options:
-    --fname=<f>     Name of the colorpicker file [default: colors.data]
+    --model=<m>     Name of the colorpicker model file [default: model.data]
     --images=<p>    Path to the image(s) to process
     --width=<w>     Width to resize images go [default: 500]
     --save          Save putput images
@@ -37,16 +37,18 @@ from treescore.judge import utils
 def local(args):
     """Run the treescore program with images from local disc"""
     fnames = glob.glob(args['--images'])
-    picker = treescore.ColorPicker.from_file(args['--fname'])
+    picker = treescore.RegressionColorPicker.from_file(args['--model'])
 
     for fname in fnames:
-        scores, images = treescore.judge.score(
+        scores, images, composite = treescore.judge.score(
             fname, picker, width=int(args['--width']), images=True)
 
         if args['--save']:
             treescore.judge.utils.save_images(images, args['--prefix'])
 
-        treescore.judge.utils.display_images(images)
+        # treescore.judge.utils.display_images(images)
+        treescore.judge.utils.display_img(composite)
+        cv2.imwrite('composute.png', composite)
         print('{} {}'.format(fname, scores))
 
 
