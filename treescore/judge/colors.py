@@ -63,7 +63,7 @@ class RegressionColorPicker(object):
     """ColorPicker based on logistic regression model"""
 
     def __init__(self, model=None):
-        self.model = model or sklearn.LogisticRegression()
+        self.model = model or LogisticRegression()
 
     @classmethod
     def from_file(cls, fname):
