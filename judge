@@ -95,6 +95,8 @@ def twitter(args):
             scores, _, image = treescore.judge.score(fname, picker, images=True)
         except ValueError:
             continue
+        except IndexError:
+            continue
 
         should_post = birdie.post_to_twitter(scores)
 
@@ -115,8 +117,8 @@ def twitter(args):
         else:
             passed += 1
 
-    with open(args['--hist'], 'wb') as pfile:
-        pickle.dump(history_set, pfile)
+        with open(args['--hist'], 'wb') as pfile:
+            pickle.dump(history_set, pfile)
 
     print('Processed {} images (skipped:{} posted:{} passed:{})'.format(
         count, skipped, posted, passed))
