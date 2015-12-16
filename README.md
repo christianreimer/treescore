@@ -36,8 +36,14 @@ easy as
 $ mkvirtualenv treescore
 $ git clone https://github.com/christianreimer/treescore.git
 $ cd treescore
-$ pip install requirements.txt
+$ pip install -r requirements.txt
 $ ./judge --help
 $
 ```
+
+# Todo
+
+There is still a lot of work to do to accurately detect colors and hence mask
+out the tree itself.
+
 
